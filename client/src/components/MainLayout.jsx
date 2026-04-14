@@ -10,7 +10,7 @@ const MainLayout = ({ children }) => {
         className="flex-1 flex flex-col items-center w-full relative"
         style={{
           /* Resmin zoomlanmasını engelleyen büyü: backgroundAttachment fixed */
-          backgroundImage: "url('/src/assets/arkaplan.png')",
+          backgroundImage: "url('/arkaplan.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed', // 👈 Resim ekran boyutunda sabit kalır, içerikle büyümez.
