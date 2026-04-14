@@ -10,27 +10,27 @@ Oyunun modern ve neon esintili arayüzünden kesitler:
 
 | 🎮 1. Karşılama ve Giriş Paneli |
 | :---: |
-| <img src="https://raw.githubusercontent.com/Seco120/tahmin-oyun/main/screenshots/foto1.png" width="100%" alt="Push Luck Giriş" /> |
+| <img width="1916" height="1079" alt="Screenshot_2" src="https://github.com/user-attachments/assets/71c816cc-54b8-4b50-9815-37edeb3bcd9a" /> |
 | *Kullanıcı dostu, interaktif giriş ekranı. Stateless JWT tabanlı auth sistemi ile güvenli oturum açma.* |
 
 | 🎲 2. Ana Lobi (Mod Seçimi) |
 | :---: |
-| <img src="https://raw.githubusercontent.com/Seco120/tahmin-oyun/main/screenshots/foto2.png" width="100%" alt="Push Luck Lobi" /> |
+| <img width="1917" height="1079" alt="Screenshot_3" src="https://github.com/user-attachments/assets/e5e89e59-4cda-49ba-9544-14c97cfe6689" /> |
 | *Classic ve Streak modları arasında geçiş yapılan, dinamik arka plan efektlerine sahip ana menü.* |
 
 | 🎯 3. Gameplay (Oyun Alanı) |
 | :---: |
-| <img src="https://raw.githubusercontent.com/Seco120/tahmin-oyun/main/screenshots/foto3.png" width="100%" alt="Push Luck Oyun Alanı" /> |
+| <img width="1916" height="1079" alt="Screenshot_4" src="https://github.com/user-attachments/assets/c9b7d224-8a83-4653-85cc-799d87aa0945" /> |
 | *Can barı, seviye takibi ve jokerlerin (Lens/Scanner) aktif olduğu oyun ekranı. Tüm karşılaştırma mantığı backend tarafında döner.* |
 
 | 🔮 4. Detaylı Oyun Rehberi |
 | :---: |
-| <img src="https://raw.githubusercontent.com/Seco120/tahmin-oyun/main/screenshots/foto4.png" width="100%" alt="Push Luck Rehber" /> |
+| <img width="1910" height="1079" alt="Screenshot_5" src="https://github.com/user-attachments/assets/fb32ec3b-41e2-4316-98e5-697139dbe681" /> |
 | *Klasik ve Streak modlarının kurallarını ve stratejik jokerlerin (Özel Yetenekler) kullanımını anlatan interaktif rehber.* |
 
 | 🏆 5. Global Sıralama (Leaderboard) |
 | :---: |
-| <img src="https://raw.githubusercontent.com/Seco120/tahmin-oyun/main/screenshots/foto5.png" width="100%" alt="Push Luck Sıralama" /> |
+| <img width="1917" height="1079" alt="Screenshot_6" src="https://github.com/user-attachments/assets/248640ab-13c5-47a7-8193-e5b8aef22d71" /> |
 | *MongoDB'den anlık çekilen verilerle oluşturulan, rütbe (Platin, Gümüş, Bronz) sistemli Top 5 Oyuncu tablosu.* |
 
 > *Not: Bu ekran görüntüleri, uygulamanın tarayıcı üzerindeki gerçek halini yansıtmaktadır.*
@@ -72,7 +72,7 @@ Bu proje, veri güvenliğini ve adil oyun deneyimini ön planda tutan profesyone
 
 **İrfan Sercan Ergüzel** - *Junior Software Developer*
 
-[LinkedIn Profilim](https://www.linkedin.com/in/isercanerguzel/) | [GitHub Profilim](https://github.com/Seco120)
+[LinkedIn Profilim](https://www.linkedin.com/in/irfan-sercan-erg%C3%BCzel-7aa151279/) | [GitHub Profilim](https://github.com/Seco120)
 
 ---
 
