@@ -1,0 +1,19 @@
+
+/* Montserrat fontunu yine en üstte tutabilirsin */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
+@import "tailwindcss";
+
+/* Eğer Montserrat kullanacaksan v4'te fontu böyle tanımlarsın: */
+@theme {
+  --font-montserrat: "Montserrat", sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
