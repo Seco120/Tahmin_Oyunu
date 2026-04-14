@@ -390,7 +390,7 @@ const syncHeader = useCallback(() => {
           </button>
         </div>
 
-        {/* MOBİL MENÜ */}
+  {/* MOBİL MENÜ */}
 <AnimatePresence>
   {isMenuOpen && (
     <motion.div 
@@ -398,19 +398,37 @@ const syncHeader = useCallback(() => {
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
-      className="fixed top-0 right-0 w-[80%] h-screen bg-white shadow-2xl lg:hidden flex flex-col p-10 z-[1100] gap-6"
+      // h-screen yerine h-[100dvh] (Dinamik ekran yüksekliği) kullandık
+      // overflow-y-auto ekledik ki çok oyuncu çıkarsa menü içinde kaysın
+      className="fixed top-0 right-0 w-[85%] h-[100dvh] bg-white shadow-2xl lg:hidden flex flex-col p-8 z-[1100] overflow-y-auto"
     >
-      <button onClick={() => setIsMenuOpen(false)} className="text-4xl text-left mb-8">✕</button>
+      {/* KAPATMA BUTONU */}
+      <div className="flex justify-end mb-4">
+        <button 
+          onClick={() => setIsMenuOpen(false)} 
+          className="text-3xl p-2 text-[#1a2c3d] hover:text-[#ff7b00] transition-colors"
+        >
+          ✕
+        </button>
+      </div>
       
-      {navItems.filter(item => item.show).map((item) => (
-        <NavLink key={item.name} to={item.path} onClick={() => setIsMenuOpen(false)} className="text-[#1a2c3d] font-[1000] text-2xl uppercase italic tracking-tighter no-underline">
-          {item.name}
-        </NavLink>
-      ))}
+      {/* NAVİGASYON LİNKLERİ */}
+      <nav className="flex flex-col gap-5 mb-8">
+        {navItems.filter(item => item.show).map((item) => (
+          <NavLink 
+            key={item.name} 
+            to={item.path} 
+            onClick={() => setIsMenuOpen(false)} 
+            className="text-[#1a2c3d] font-[1000] text-2xl uppercase italic tracking-tighter no-underline border-b border-gray-50 pb-2"
+          >
+            {item.name}
+          </NavLink>
+        ))}
+      </nav>
 
-      {/* MOBİL ARAMA ÇUBUĞU - EKLEDİĞİMİZ KISIM */}
-      <div className="relative mt-4" ref={searchRef}>
-        <div className="flex items-center w-full bg-[#f4f7fa] px-4 h-[50px] rounded-2xl border-2 focus-within:border-[#ff7b00]/30 transition-all">
+      {/* MOBİL ARAMA ÇUBUĞU */}
+      <div className="relative mb-8" ref={searchRef}>
+        <div className="flex items-center w-full bg-[#f4f7fa] px-4 h-[55px] rounded-2xl border-2 border-transparent focus-within:border-[#ff7b00]/30 transition-all shadow-inner">
           <span className="text-gray-400 mr-2 text-xl">{isSearching ? '⏳' : '🔍'}</span>
           <input 
             type="text" 
@@ -421,22 +439,22 @@ const syncHeader = useCallback(() => {
           />
         </div>
 
-        {/* MOBİL ARAMA SONUÇLARI DROPDOWN */}
+        {/* MOBİL ARAMA SONUÇLARI - Maksimum yükseklik verip kaydırılabilir yaptık */}
         <AnimatePresence>
           {searchResults.length > 0 && (
             <motion.div 
-              initial={{ opacity: 0, y: 10 }} 
+              initial={{ opacity: 0, y: 5 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute top-[60px] left-0 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-[1200]"
+              exit={{ opacity: 0, y: 5 }}
+              className="absolute top-[60px] left-0 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-y-auto max-h-[300px] z-[1200]"
             >
               {searchResults.map((user, index) => {
                 const rank = getRankInfo(user.highScore || 0);
                 return (
-                  <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50 border-b border-gray-50 last:border-none">
+                  <div key={index} className="flex items-center justify-between p-4 hover:bg-orange-50 border-b border-gray-50 last:border-none active:bg-orange-100 transition-colors">
                     <div className="flex flex-col">
-                      <span className="text-xs font-black text-[#1a2c3d] uppercase">{user.username}</span>
-                      <span className={`text-[9px] font-black uppercase ${rank.color}`}>{rank.title}</span>
+                      <span className="text-xs font-black text-[#1a2c3d] uppercase leading-none mb-1">{user.username}</span>
+                      <span className={`text-[9px] font-black uppercase tracking-tighter ${rank.color}`}>{rank.title}</span>
                     </div>
                     <span className="text-xs font-[1000] text-[#ff7b00] italic">{user.highScore || 0} P</span>
                   </div>
@@ -447,16 +465,34 @@ const syncHeader = useCallback(() => {
         </AnimatePresence>
       </div>
 
-      {isLoggedIn && (
-        <>
-          <NavLink to="/game" onClick={() => setIsMenuOpen(false)} className="text-[#ff7b00] font-[1000] text-2xl uppercase italic tracking-tighter no-underline border-t pt-6 mt-2">
-            ARENA'YA GİR 🔥
+      {/* ALT KISIM (ARENA & ÇIKIŞ) */}
+      <div className="mt-auto pt-6 border-t border-gray-100 flex flex-col gap-6">
+        {isLoggedIn ? (
+          <>
+            <NavLink 
+              to="/game" 
+              onClick={() => setIsMenuOpen(false)} 
+              className="text-[#ff7b00] font-[1000] text-2xl uppercase italic tracking-tighter no-underline text-center bg-orange-50 py-4 rounded-2xl shadow-sm"
+            >
+              ARENA'YA GİR 🔥
+            </NavLink>
+            <button 
+              onClick={handleLogout} 
+              className="text-red-500 font-[1000] text-sm uppercase tracking-[0.2em] py-2"
+            >
+              ÇIKIŞ YAP
+            </button>
+          </>
+        ) : (
+          <NavLink 
+            to="/login" 
+            onClick={() => setIsMenuOpen(false)} 
+            className="text-[#1a2c3d] font-[1000] text-xl uppercase italic text-center border-2 border-[#1a2c3d] py-3 rounded-2xl"
+          >
+            Giriş Yap
           </NavLink>
-          <button onClick={handleLogout} className="text-red-500 font-[1000] text-sm uppercase tracking-widest text-left mt-auto">
-            ÇIKIŞ YAP
-          </button>
-        </>
-      )}
+        )}
+      </div>
     </motion.div>
   )}
 </AnimatePresence>

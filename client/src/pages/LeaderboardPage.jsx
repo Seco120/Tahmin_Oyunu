@@ -8,8 +8,9 @@ const LeaderboardPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Sayfanın dışarıdan kaymasını engellemek için kesin çözüm
-    document.body.style.overflow = 'hidden';
+    // Sayfanın genel kaymasını yönet ama kilitleme
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'auto';
     
     const fetchLeaderboard = async () => {
       try {
@@ -39,34 +40,37 @@ const LeaderboardPage = () => {
   };
 
   return (
-    /* pt-24 ve md:pt-32 ekleyerek Header'ın altında kalmasını engelledik. 
-       overflow-y-hidden ile aşağı kaymayı tamamen kapattık.
-    */
-    <div className="fixed inset-0 w-full h-full overflow-y-hidden font-['Montserrat'] flex flex-col items-center pt-24 md:pt-32 px-4 select-none">
+    /* fixed inset-0 kaldırıldı, min-h-screen ve flex-col eklendi */
+    <div className="min-h-screen w-full font-['Montserrat'] flex flex-col items-center pt-24 md:pt-0 pb-10 px-4 select-none bg-transparent">
       
-      {/* BAŞLIK ALANI */}
-      <div className="relative z-50 text-center mb-6">
-        <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter uppercase leading-none">
+      {/* BAŞLIK ALANI - Mobilde text boyutu optimize edildi */}
+      <div className="relative z-50 text-center mb-8">
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-5xl md:text-7xl font-black text-[#1a2c3d] tracking-tighter uppercase leading-none italic"
+        >
           SIRALAMA
-        </h1>
-        <p className="text-black/80 text-[10px] md:text-xs mt-1 font-black uppercase tracking-[0.3em]">
+        </motion.h1>
+        <p className="text-[#ff7b00] text-[10px] md:text-xs mt-2 font-black uppercase tracking-[0.4em]">
           TOP 5 OYUNCU 🔥
         </p>
       </div>
 
       {/* LİSTE KONTEYNERİ */}
-      <div className="relative w-full max-w-2xl z-40">
+      <div className="relative w-full max-w-2xl z-40 px-2">
         {loading ? (
-          <div className="flex justify-center py-10">
-            <div className="w-8 h-8 border-4 border-[#ff7b00] border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-10 h-10 border-4 border-[#ff7b00] border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-xs font-black uppercase text-[#1a2c3d]/40">Liderler Getiriliyor...</span>
           </div>
         ) : (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gradient-to-br from-[#2c4e7a]/98 via-[#162a44]/98 to-[#010c1d]/98 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/10 p-4 md:p-6"
+            className="bg-gradient-to-br from-[#162a44]/95 via-[#0f1d31]/98 to-[#010c1d]/98 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/10 p-4 md:p-8"
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <AnimatePresence>
                 {leaders.map((player, index) => {
                   const rank = getUserRank(player.highScore);
@@ -75,29 +79,29 @@ const LeaderboardPage = () => {
                       key={player._id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className={`flex items-center justify-between px-5 py-3 rounded-2xl border transition-all bg-white/5 ${rank.border} ${rank.shadow}`}
+                      transition={{ delay: index * 0.1 }}
+                      className={`flex items-center justify-between px-4 md:px-6 py-4 rounded-2xl border transition-all bg-white/5 hover:bg-white/10 ${rank.border} ${rank.shadow}`}
                     >
-                      <div className="flex items-center gap-4">
-                        <span className={`text-sm md:text-lg font-black w-5 ${index === 0 ? 'text-[#ff7b00]' : 'text-white/20'}`}>
+                      <div className="flex items-center gap-3 md:gap-5">
+                        <span className={`text-xl md:text-2xl font-black w-6 text-center ${index === 0 ? 'text-[#ff7b00]' : 'text-white/20'}`}>
                           {index + 1}
                         </span>
                         
                         <div className="flex flex-col leading-tight">
-                          <span className="text-white font-black uppercase tracking-wider text-xs md:text-sm">
+                          <span className="text-white font-black uppercase tracking-wider text-sm md:text-base">
                             {player.username}
                           </span>
-                          <span className={`text-[8px] md:text-[10px] font-black uppercase tracking-widest ${rank.color}`}>
+                          <span className={`text-[9px] md:text-[11px] font-black uppercase tracking-widest ${rank.color}`}>
                             {rank.title}
                           </span>
                         </div>
                       </div>
                       
                       <div className="text-right leading-tight">
-                        <span className={`text-lg md:text-2xl font-black tracking-tighter ${rank.color}`}>
+                        <span className={`text-xl md:text-3xl font-[1000] tracking-tighter ${rank.color}`}>
                           {player.highScore.toLocaleString()}
                         </span>
-                        <p className="text-[8px] text-white/30 font-black uppercase">PUAN</p>
+                        <p className="text-[7px] md:text-[9px] text-white/30 font-black uppercase">PUAN</p>
                       </div>
                     </motion.div>
                   );
@@ -109,15 +113,15 @@ const LeaderboardPage = () => {
       </div>
 
       {/* FOOTER BÖLÜMÜ */}
-      <div className="mt-6 flex flex-col items-center gap-4">
-        <div className="flex items-center gap-2 text-black/50 text-[8px] font-black uppercase tracking-[0.2em]">
-          <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-          VERİLER GÜNCEL
+      <div className="mt-10 flex flex-col items-center gap-6 pb-10">
+        <div className="flex items-center gap-2 text-[#1a2c3d]/50 text-[9px] font-black uppercase tracking-[0.3em]">
+          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></span>
+          VERİLER ANLIK GÜNCELLENİYOR
         </div>
         
         <Link 
           to="/" 
-          className="bg-black/10 hover:bg-black/20 px-8 py-2.5 rounded-full text-black font-black uppercase text-[10px] tracking-widest transition-all"
+          className="bg-[#1a2c3d] hover:bg-[#ff7b00] px-10 py-4 rounded-2xl text-white font-black uppercase text-[11px] tracking-widest transition-all shadow-xl active:scale-95"
         >
           ← ANA MENÜYE DÖN
         </Link>

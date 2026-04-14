@@ -107,7 +107,7 @@ exports.forgotPassword = async (req, res, next) => {
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `https://tahmin-oyunu-blue.vercel.app/reset-password/${resetToken}`;
     const message = `Şifrenizi sıfırlamak için lütfen aşağıdaki bağlantıya tıklayınız: \n\n ${resetUrl}`;
 
     try {

@@ -84,7 +84,7 @@ const loadProfileData = () => {
     if (!token || token === 'undefined' || finalScore === undefined) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/score', {
+      const response = await fetch('https://tahmin-oyunu-dket.onrender.com/api/users/score', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
