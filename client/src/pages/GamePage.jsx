@@ -263,21 +263,18 @@ const loadProfileData = () => {
       className="fixed top-30 left-84 z-[900] bg-[#1a2c3d]/80 backdrop-blur-xl p-4 rounded-[2rem] border border-white/10 shadow-2xl flex items-center gap-4 group hidden md:flex"
     >
       {/* AVATAR ALANI */}
-      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#1a2c3d] to-[#2c4e7a] border-2 border-[#ff7b00] flex items-center justify-center overflow-hidden shadow-lg relative">
-  {profileData.avatar ? (
-    <img 
-      src={profileData.avatar} 
-      alt="Profile" 
-      className="w-full h-full object-cover"
-      onError={(e) => {
-        e.target.style.display = 'none';
-        e.target.parentElement.innerHTML = '<span class="text-2xl">👤</span>';
-      }}
-    />
-  ) : (
-    <span className="text-2xl">👤</span>
-  )}
-</div>
+      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#1a2c3d] to-[#2c4e7a] border-2 border-[#ff7b00] flex items-center justify-center overflow-hidden shadow-lg shadow-[#ff7b00]/20">
+        {profileData.avatar ? (
+          <img 
+            src={profileData.avatar} 
+            alt="Profile" 
+            className="w-full h-full object-cover"
+            onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + profileData.username + '&background=1a2c3d&color=fff'; }}
+          />
+        ) : (
+          <span className="text-2xl">👤</span> // Veri henüz gelmediyse veya yoksa ikon kalsın
+        )}
+      </div>
 
       <div className="flex flex-col">
         <span className={`text-[10px] font-black uppercase tracking-widest ${profileData.color}`}>

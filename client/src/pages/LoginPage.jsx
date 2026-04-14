@@ -39,7 +39,7 @@ export default function LoginPage() {
 
     try {
       if (isForgotMode) {
-        const response = await axios.post('http://127.0.0.1:5000/api/auth/forgotpassword', { 
+        const response = await axios.post('https://tahmin-oyunu-dket.onrender.com/api/auth/forgotpassword', { 
           email: formData.email 
         });
         if (response.data.success) {
@@ -50,7 +50,7 @@ export default function LoginPage() {
           setTimeout(() => setIsForgotMode(false), 3000);
         }
       } else {
-        const response = await axios.post('http://127.0.0.1:5000/api/auth/login', formData);
+        const response = await axios.post('https://tahmin-oyunu-dket.onrender.com/api/auth/login', formData);
         
         if (response.data.success) {
           // 1. Önce misafir modunu temizle

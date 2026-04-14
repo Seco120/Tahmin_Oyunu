@@ -13,7 +13,7 @@ const LeaderboardPage = () => {
     
     const fetchLeaderboard = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:5000/api/users/leaderboard');
+        const res = await axios.get('https://tahmin-oyunu-dket.onrender.com/api/users/leaderboard');
         if (res.data.success) {
           setLeaders(res.data.data);
         }

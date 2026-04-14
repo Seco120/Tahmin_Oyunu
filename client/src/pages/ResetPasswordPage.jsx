@@ -34,7 +34,7 @@ const ResetPasswordPage = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const res = await axios.put(`http://127.0.0.1:5000/api/auth/resetpassword/${resetToken}`, {
+      const res = await axios.put(`https://tahmin-oyunu-dket.onrender.com/api/auth/resetpassword/${resetToken}`, {
         password: password
       });
 
