@@ -246,54 +246,44 @@ const loadProfileData = () => {
   }, [streakLevel]);
 
   return (
-    <div className="h-screen pt-12 pb-12 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center overflow-hidden text-white relative">
-      <style>{`
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-        body { overflow: hidden; position: fixed; width: 100%; }
-      `}</style>
+  <div className="h-[100svh] w-full pt-2 pb-2 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center overflow-hidden text-white relative">
+    <style>{`
+      input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      input[type=number] { -moz-appearance: textfield; }
+      body { overflow: hidden; position: fixed; width: 100%; }
+    `}</style>
 
-      {/* 🔥 ARENA PROFİL PANELİ (SOL ÜST) */}
-<AnimatePresence>
-  {(gameState === 'playing' || gameState === 'result') && gameMode === 'streak' && (
-    <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
-      className="fixed top-30 left-84 z-[900] bg-[#1a2c3d]/80 backdrop-blur-xl p-4 rounded-[2rem] border border-white/10 shadow-2xl flex items-center gap-4 group hidden md:flex"
-    >
-      {/* AVATAR ALANI */}
-      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#1a2c3d] to-[#2c4e7a] border-2 border-[#ff7b00] flex items-center justify-center overflow-hidden shadow-lg shadow-[#ff7b00]/20">
-        {profileData.avatar ? (
-          <img 
-            src={profileData.avatar} 
-            alt="Profile" 
-            className="w-full h-full object-cover"
-            onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + profileData.username + '&background=1a2c3d&color=fff'; }}
-          />
-        ) : (
-          <span className="text-2xl">👤</span> // Veri henüz gelmediyse veya yoksa ikon kalsın
-        )}
-      </div>
-
-      <div className="flex flex-col">
-        <span className={`text-[10px] font-black uppercase tracking-widest ${profileData.color}`}>
-          {profileData.rank}
-        </span>
-        <div className="flex items-center gap-2">
-          <span className="text-3xl font-[1000] italic leading-none text-white">{profileData.score}</span>
-          <motion.span 
-            animate={{ opacity: [0.4, 1, 0.4] }} 
-            transition={{ repeat: Infinity, duration: 2 }} 
-            className="bg-[#ff7b00] text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase italic"
-          >
-            BEST
-          </motion.span>
-        </div>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
+    {/* 🔥 YENİ: KOMPAKT PROFİL HEADER (ARTIK ÜSTE BİNMEZ) */}
+    <AnimatePresence>
+      {(gameState === 'playing' || gameState === 'result') && gameMode === 'streak' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="w-full max-w-md mb-2 bg-[#1a2c3d]/60 backdrop-blur-md p-2 rounded-2xl border border-white/10 flex items-center justify-between shadow-lg"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full border-2 border-[#ff7b00] overflow-hidden">
+              {profileData.avatar ? (
+                <img src={profileData.avatar} className="w-full h-full object-cover" />
+              ) : (
+                <span className="flex items-center justify-center h-full text-xl">👤</span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-[8px] font-black uppercase tracking-tighter ${profileData.color}`}>
+                {profileData.rank}
+              </span>
+              <span className="text-xs font-bold truncate max-w-[80px]">{profileData.username}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-[1000] italic text-[#ff7b00]">{profileData.score}</span>
+            <span className="text-[8px] font-black opacity-40 uppercase">Best</span>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
       <AnimatePresence mode="wait">
         {gameState === 'playing' && (
@@ -304,12 +294,12 @@ const loadProfileData = () => {
               </span>
             </div>
 
-            <div className="flex justify-between items-center mb-6 bg-white/10 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white/20 shadow-2xl text-[#1a2c3d]">
+            <div className="flex justify-between items-center mb-6 bg-white/10 backdrop-blur-xl p-4 md: p-6 rounded:[2rem] md:rounded-[2.5rem] border border-white/20 shadow-2xl text-[#1a2c3d]">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] block mb-2 text-black/50">CANLAR</span>
-                <div className="flex gap-1.5 flex-wrap max-w-[200px]">
-                  {[...Array(currentLives)].map((_, i) => (
-                    <motion.div layoutId={`heart-${i}`} key={i} className="w-2.5 h-8 bg-[#ff7b00] rounded-full shadow-[0_0_15px_rgba(255,123,0,0.5)]" />
+                <div className="flex gap-1 flex-wrap max-w-[100px] md:max-w-[200px]">
+  {[...Array(currentLives)].map((_, i) => (
+    <motion.div key={i} className="w-1.5 md:w-2.5 h-6 md:h-8 bg-[#ff7b00] rounded-full shadow-[0_0_15px_rgba(255,123,0,0.5)]" />
                   ))}
                 </div>
               </div>
@@ -321,8 +311,11 @@ const loadProfileData = () => {
               </div>
             </div>
 
-            <div className="bg-[#162a44] p-12 rounded-[4.5rem] shadow-2xl border-4 border-white/5 relative overflow-hidden text-center">
-              <div className="flex justify-center gap-2 mb-4 h-10">
+            {/* OYUN ALANI */}
+<div className="bg-[#162a44] p-3 md:p-5 rounded-[2.5rem] md:rounded-[4.5rem] shadow-2xl border-4 border-white/5 relative overflow-hidden text-center w-full max-w-2xl">
+  
+  {/* Üstteki basamaklar ve mesaj alanı boşlukları azaltıldı */}
+  <div className="flex justify-center gap-2 mb-1 h-6">
                 {Object.keys(revealedDigits).length > 0 && 
                   targetNumber.toString().split('').map((_, i) => (
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} key={i} 
@@ -345,28 +338,46 @@ const loadProfileData = () => {
                </motion.div>
 
                <form onSubmit={handleGuess}>
-                 <input 
-                   autoFocus 
-                   type="number" 
-                   value={guess} 
-                   onChange={(e) => setGuess(e.target.value)} 
-                   className={`w-full bg-transparent text-[8rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter 
-                     ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'} placeholder:opacity-5`} 
-                   placeholder="?" 
-                 />
+                <input 
+  autoFocus 
+  type="number" 
+  inputMode="numeric" // Sayı klavyesini zorlar
+  value={guess} 
+  onChange={(e) => setGuess(e.target.value)} 
+  className={`w-full bg-transparent text-[5rem] sm:text-[8rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
+  placeholder="?" 
+/>
                  <button type="submit" className="hidden">OK</button>
                </form>
 
+               {/* BURAYA YAPIŞTIR: Formun bittiği yer */}
+<div className="flex flex-wrap justify-center gap-2 mt-2 overflow-x-auto pb-2 max-h-24">
+  {attempts.map((prevGuess, index) => (
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      key={index}
+      className={`px-3 py-1 rounded-full text-xs font-black border ${
+        prevGuess < targetNumber 
+          ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' 
+          : 'border-red-500/50 text-red-400 bg-red-400/10'
+      }`}
+    >
+      {prevGuess} {prevGuess < targetNumber ? '↑' : '↓'}
+    </motion.div>
+  ))}
+</div>
+
                {gameMode === 'streak' && (
-                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-5">
+<div className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-5">
                    <div className="relative">
-                     <motion.button whileTap={{ scale: 0.9 }} onClick={useLens} disabled={powers.lens === 0 || activeHint} className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 ${powers.lens > 0 ? 'bg-[#1a2c3d] border-[#ff7b00]' : 'opacity-10'}`}>
+                     <motion.button whileTap={{ scale: 0.9 }} onClick={useLens} disabled={powers.lens === 0 || activeHint} className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center border-2 ${powers.lens > 0 ? 'bg-[#1a2c3d] border-[#ff7b00]' : 'opacity-10'}`}>
                        <span className="text-xl">🔍</span>
                      </motion.button>
                      <span className="absolute -top-2 -right-2 bg-[#ff7b00] text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center">{powers.lens}</span>
                    </div>
                    <div className="relative">
-                     <motion.button whileTap={{ scale: 0.9 }} onClick={useScanner} disabled={powers.scanner === 0} className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 ${powers.scanner > 0 ? 'bg-[#1a2c3d] border-purple-500' : 'opacity-10'}`}>
+                     <motion.button whileTap={{ scale: 0.9 }} onClick={useScanner} disabled={powers.scanner === 0} className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center border-2 ${powers.scanner > 0 ? 'bg-[#1a2c3d] border-purple-500' : 'opacity-10'}`}>
                        <span className="text-xl">📡</span>
                      </motion.button>
                      <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center">{powers.scanner}</span>
@@ -393,11 +404,11 @@ const loadProfileData = () => {
       <span className="bg-black text-white text-[10px] font-black px-4 py-2 rounded-full border border-white/20">🔒 KAYIT GEREKLİ</span>
     </div>
   )}
-  <span className="relative z-10 text-5xl font-[1000] italic text-white uppercase tracking-tighter">STREAK</span>
+  <span className="relative z-10 text-3xl md:text-5xl font-[1000] italic text-white uppercase tracking-tighter">STREAK</span>
   <div className="absolute -right-6 -bottom-6 text-9xl opacity-20">⚡</div>
 </button>
                 <button onClick={() => setGameState('classic_setup')} className="bg-[#162a44] p-12 rounded-[3.5rem] group relative overflow-hidden border-4 border-white/10 active:scale-95 transition-all shadow-2xl">
-                  <span className="relative z-10 text-5xl font-[1000] italic text-white uppercase tracking-tighter">CLASSIC</span>
+                  <span className="relative z-10 text-3xl md:text-5xl font-[1000] italic text-white uppercase tracking-tighter">CLASSIC</span>
                   <div className="absolute -right-6 -bottom-6 text-9xl opacity-10 group-hover:-rotate-12 transition-transform">⚙️</div>
                 </button>
               </div>

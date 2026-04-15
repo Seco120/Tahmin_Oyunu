@@ -61,7 +61,7 @@ const handleUpdate = async () => {
       return;
     }
 
-    const res = await fetch('http://localhost:5000/api/users/profile', {
+    const res = await fetch('https://tahmin-oyunu-dket.onrender.com/api/users/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
       body: JSON.stringify(bodyData)
@@ -94,7 +94,7 @@ const handleUpdate = async () => {
     }
     setIsSearching(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/users/search?q=${searchTerm}`);
+      const res = await fetch(`https://tahmin-oyunu-dket.onrender.com/api/users/search?q=${searchTerm}`);
       const data = await res.json();
       setSearchResults(data.slice(0, 7)); // Sadece 7 kişi
     } catch (err) { console.error(err); } 
@@ -183,10 +183,10 @@ const syncHeader = useCallback(() => {
           <div className="h-[60px] md:h-[85px] w-auto transition-transform duration-300 group-hover:scale-105">
             <img src={logoImg} alt="Logo" className="h-full w-full object-contain" />
           </div>
-          <div className="flex flex-col uppercase text-[#1a2c3d]">
-            <span className="font-[1000] text-[16px] md:text-[20px] leading-[1] tracking-tighter">SAYI TAHMİN</span>
-            <span className="font-[1000] text-[18px] md:text-[24px] leading-[0.8] tracking-tighter text-[#ff7b00]">OYUNU</span>
-          </div>
+          <div className="flex flex-col uppercase text-[#1a2c3d] ml-1">
+  <span className="font-[1000] text-[12px] md:text-[20px] leading-[1.1] tracking-tighter">SAYI TAHMİN</span>
+  <span className="font-[1000] text-[14px] md:text-[24px] leading-[0.8] tracking-tighter text-[#ff7b00]">OYUNU</span>
+</div>
         </Link>
 
         {/* MASAÜSTÜ NAVİGASYON */}
@@ -326,50 +326,50 @@ const syncHeader = useCallback(() => {
 
           {/* DÜZENLEME ALANI BAŞLANGIÇ */}
           <div className="border-t border-gray-200 mt-2 pt-2">
-           {isEditing ? (
-  <div className="flex flex-col gap-2 mt-2 bg-gray-50 p-3 rounded-lg">
-    {/* Önizleme */}
-    <div className="w-12 h-12 rounded-full overflow-hidden mx-auto border-2 border-[#ff7b00]">
-       <img src={newAvatar || "/default-avatar.png"} className="w-full h-full object-cover" />
-    </div>
-    
-    <label className="text-[10px] font-bold text-gray-500 text-left">KULLANICI ADI</label>
-    <input 
-      type="text" 
-      value={newName} 
-      onChange={(e) => setNewName(e.target.value)}
-      className="w-full text-[10px] p-2 rounded border border-gray-200 outline-none text-black"
-    />
+          {isEditing ? (
+  <div className="flex flex-col gap-3 mt-2 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+    {/* Önizleme */}
+    <div className="relative group mx-auto">
+      <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-md">
+         <img src={newAvatar || "/default-avatar.png"} className="w-full h-full object-cover" />
+      </div>
+      <label className="absolute bottom-0 right-0 bg-[#ff7b00] text-white p-1 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform">
+        <span className="text-[10px]">📸</span>
+        <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+      </label>
+    </div>
+    
+    <div className="space-y-1">
+      <label className="text-[9px] font-black text-gray-400 ml-1">KULLANICI ADI</label>
+      <input 
+        type="text" 
+        value={newName} 
+        onChange={(e) => setNewName(e.target.value)}
+        className="w-full text-xs font-bold p-3 rounded-xl border-2 border-transparent focus:border-[#ff7b00]/20 bg-white shadow-sm outline-none text-[#1a2c3d]"
+      />
+    </div>
 
-    <label className="text-[10px] font-bold text-gray-500 text-left">PROFİL RESMİ SEÇ</label>
-    <input 
-      type="file" 
-      accept="image/*"
-      onChange={handleFileChange}
-      className="text-[9px] text-gray-500 file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
-    />
+    {status.msg && (
+      <div className={`text-[10px] font-bold py-2 px-3 rounded-lg text-center ${
+        status.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+      }`}>
+        {status.msg}
+      </div>
+    )}
 
-   {status.msg && (
-      <div className={`text-[10px] font-bold py-1 px-2 rounded ${
-        status.type === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-      }`}>
-        {status.msg}
-      </div>
-    )}
-
-    <div className="flex gap-2 mt-2">
-      <button onClick={handleUpdate} className="flex-1 bg-[#ff7b00] text-white text-[9px] font-[1000] py-2 rounded-lg hover:shadow-lg transition-all">
-        GÜNCELLE
-      </button>
-      <button onClick={() => { setIsEditing(false); setStatus({type:'', msg:''}); }} className="flex-1 bg-gray-300 text-white text-[9px] font-[1000] py-2 rounded-lg">
-        VAZGEÇ
-      </button>
-    </div>
-  </div>
+    <div className="flex gap-2">
+      <button onClick={handleUpdate} className="flex-[2] bg-[#ff7b00] text-white text-[9px] font-[1000] py-2 rounded-lg hover:bg-orange-400 hover:shadow-lg active:scale-95 transition-all uppercase tracking-wider">
+        KAYDET
+      </button>
+      <button onClick={() => { setIsEditing(false); setStatus({type:'', msg:''}); }} className="flex-1 bg-red-500 text-white border border-red-300 text-[9px] font-[1000] py-2 rounded-lg hover:bg-red-800 hover:text-white active:scale-95 transition-all uppercase tracking-wider">
+        İPTAL
+      </button>
+    </div>
+  </div>
 ) : (
-  <button onClick={() => setIsEditing(true)} className="text-[10px] font-[1000] text-[#ff7b00] uppercase mt-2 tracking-widest hover:underline">
-    ⚙️ Ayarları Düzenle
-  </button>
+  <button onClick={() => setIsEditing(true)} className="w-full bg-[#f4f7fa] py-3 rounded-xl text-[10px] font-black text-[#1a2c3d] uppercase mt-2 tracking-widest hover:bg-orange-50 hover:text-[#ff7b00] transition-all">
+    ⚙️ Profili Düzenle
+  </button>
 )}
           </div>
           {/* DÜZENLEME ALANI BİTİŞ */}
@@ -439,60 +439,63 @@ const syncHeader = useCallback(() => {
           />
         </div>
 
-        {/* MOBİL ARAMA SONUÇLARI - Maksimum yükseklik verip kaydırılabilir yaptık */}
-        <AnimatePresence>
-          {searchResults.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 5 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: 5 }}
-              className="absolute top-[60px] left-0 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-y-auto max-h-[300px] z-[1200]"
-            >
-              {searchResults.map((user, index) => {
-                const rank = getRankInfo(user.highScore || 0);
-                return (
-                  <div key={index} className="flex items-center justify-between p-4 hover:bg-orange-50 border-b border-gray-50 last:border-none active:bg-orange-100 transition-colors">
-                    <div className="flex flex-col">
-                      <span className="text-xs font-black text-[#1a2c3d] uppercase leading-none mb-1">{user.username}</span>
-                      <span className={`text-[9px] font-black uppercase tracking-tighter ${rank.color}`}>{rank.title}</span>
-                    </div>
-                    <span className="text-xs font-[1000] text-[#ff7b00] italic">{user.highScore || 0} P</span>
-                  </div>
-                );
-              })}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* MOBİL ARAMA SONUÇLARI */}
+<AnimatePresence>
+  {searchResults.length > 0 && (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }} 
+      animate={{ opacity: 1, scale: 1 }} 
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="absolute top-[65px] left-0 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 overflow-y-auto max-h-[250px] z-[1300]"
+    >
+      {searchResults.map((user, index) => {
+        const rank = getRankInfo(user.highScore || 0);
+        return (
+          <div 
+            key={index} 
+            onClick={() => { navigate(`/profile/${user._id}`); setIsMenuOpen(false); }} // Tıklayınca profile gitsin
+            className="flex items-center justify-between p-4 hover:bg-orange-50 border-b border-gray-50 active:bg-orange-100 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-orange-100">
+                  <img src={user.avatar || "/default-avatar.png"} className="w-full h-full object-cover" />
+               </div>
+               <div className="flex flex-col">
+                 <span className="text-[11px] font-black text-[#1a2c3d] uppercase leading-none">{user.username}</span>
+                 <span className={`text-[9px] font-black uppercase tracking-tighter ${rank.color}`}>{rank.title}</span>
+               </div>
+            </div>
+            <span className="text-xs font-[1000] text-[#ff7b00] italic">{user.highScore || 0} P</span>
+          </div>
+        );
+      })}
+    </motion.div>
+  )}
+</AnimatePresence>
       </div>
 
       {/* ALT KISIM (ARENA & ÇIKIŞ) */}
-      <div className="mt-auto pt-6 border-t border-gray-100 flex flex-col gap-6">
-        {isLoggedIn ? (
-          <>
-            <NavLink 
-              to="/game" 
-              onClick={() => setIsMenuOpen(false)} 
-              className="text-[#ff7b00] font-[1000] text-2xl uppercase italic tracking-tighter no-underline text-center bg-orange-50 py-4 rounded-2xl shadow-sm"
-            >
-              ARENA'YA GİR 🔥
-            </NavLink>
-            <button 
-              onClick={handleLogout} 
-              className="text-red-500 font-[1000] text-sm uppercase tracking-[0.2em] py-2"
-            >
-              ÇIKIŞ YAP
-            </button>
-          </>
-        ) : (
-          <NavLink 
-            to="/login" 
-            onClick={() => setIsMenuOpen(false)} 
-            className="text-[#1a2c3d] font-[1000] text-xl uppercase italic text-center border-2 border-[#1a2c3d] py-3 rounded-2xl"
-          >
-            Giriş Yap
-          </NavLink>
-        )}
-      </div>
+     {/* ALT KISIM (ARENA & ÇIKIŞ) */}
+<div className="mt-auto pt-6 border-t border-gray-100 flex flex-col gap-6">
+  {isLoggedIn && (
+    <>
+      <NavLink 
+        to="/game" 
+        onClick={() => setIsMenuOpen(false)} 
+        className="text-[#ff7b00] font-[1000] text-2xl uppercase italic tracking-tighter no-underline text-center bg-orange-50 py-4 rounded-2xl shadow-sm active:scale-95 transition-transform"
+      >
+        ARENA'YA GİR 🔥
+      </NavLink>
+      
+      <button 
+        onClick={handleLogout} 
+        className="text-red-500 font-[1000] text-sm uppercase tracking-[0.2em] py-2 active:opacity-60 transition-opacity"
+      >
+        ÇIKIŞ YAP
+      </button>
+    </>
+  )}
+</div>
     </motion.div>
   )}
 </AnimatePresence>
