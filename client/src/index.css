@@ -65,7 +65,7 @@
   /* svh yerine dvh (Dynamic Viewport Height) kullanıyoruz */
   min-height: 100dvh !important;
   /* İçerik sığmazsa mutlaka kaydır */
-  overflow-y: auto !important;
+  overflow-y: auto;
   overflow-x: hidden;
   /* GPU hızlandırmasını açarak kaydırmayı yağ gibi yapar */
   -webkit-overflow-scrolling: touch;
