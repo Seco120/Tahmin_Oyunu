@@ -8,52 +8,48 @@
   --font-sans: var(--font-montserrat);
 }
 
-/* 1. NUCLEAR RESET: CHROME & SAFARI KAYDIRMA MOTORU */
+/* 1. GLOBAL RESET & KAYDIRMA MOTORU TAMİRİ */
 @layer base {
   html {
-    /* Chrome'un alt kısmı kesmemesi için height fixed olmamalı */
-    height: -webkit-fill-available;
     width: 100%;
+    /* Sağa taşmayı engelle ama dikeyde ASLA kısıtlama */
     overflow-x: hidden;
-    /* Kaydırmayı kökten serbest bırak */
     overflow-y: auto !important;
+    -webkit-text-size-adjust: 100%;
+    /* iOS Safari'de adres çubuğu değişimlerini yumuşatır */
+    height: -webkit-fill-available;
   }
 
   body {
     margin: 0;
     padding: 0;
     width: 100%;
-    /* 'min-height' kullanıyoruz ki içerik uzadıkça sayfa da uzasın */
+    /* 100dvh ve fill-available ile tüm mobil tarayıcılara uyum sağlar */
     min-height: 100dvh;
     min-height: -webkit-fill-available;
     
-    /* ÖNEMLİ: 'scroll-behavior: smooth' yukarı zıplatma yapar, bunu sildik veya auto yaptık */
-    scroll-behavior: auto !important;
-    
-    /* Body seviyesinde kilitleri kaldırıyoruz */
+    /* ÖNEMLİ: Body'de fixed veya overflow:hidden olmamalı */
     overflow-x: hidden;
     overflow-y: auto !important;
     position: relative;
     
     font-family: var(--font-montserrat);
-    background-color: #0f172a;
+    background-color: #0f172a; /* Oyunun koyu temasına uygun */
     -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    
-    /* Mobilde sayfa sonu zıplamasını (rubber band) engelle ama kaydırmayı kapatma */
-    overscroll-behavior-y: contain;
   }
 
   #root {
     width: 100%;
-    /* İçerik ne kadar uzunsa #root o kadar boy atmalı */
-    height: auto !important;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    overflow: visible !important;
+    /* Root seviyesinde de taşmayı serbest bırakıyoruz */
+    overflow-y: visible !important;
   }
 
+  /* Rakam inputlarındaki gıcık okları kaldır */
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -61,28 +57,38 @@
   }
 }
 
-/* 2. PAGE CONTAINER: TÜM SAYFALARIN ANA SINIFI */
-/* GamePage, LoginPage ve RegisterPage'deki en dış div'e bunu ekle */
-.page-container {
+/* 2. GAMEPAGE ÖZEL FIX (O "DONMA" HİSSİNİ BİTİREN KISIM) */
+.game-container-root {
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* İçerik az olsa bile ekranı kapla ama çoksa uzamaya devam et */
-  min-height: 100dvh;
-  height: auto !important;
-  /* Taşma kontrolü: visible Chrome'un her yeri render etmesini sağlar */
-  overflow-y: visible !important;
+  /* svh yerine dvh (Dynamic Viewport Height) kullanıyoruz */
+  min-height: 100dvh !important;
+  /* İçerik sığmazsa mutlaka kaydır */
+  overflow-y: auto !important;
   overflow-x: hidden;
-  position: relative;
-  /* Chrome render optimizasyonu */
-  will-change: transform;
+  /* GPU hızlandırmasını açarak kaydırmayı yağ gibi yapar */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* 3. LANDSCAPE (YAN ÇEVİRME) FİX */
+/* 3. LANDSCAPE (YAN ÇEVİRME) VE KLAVYE OPTİMİZASYONU */
 @media (orientation: landscape) and (max-height: 550px) {
-  .page-container {
-    padding-bottom: 100px !important; /* Alt butonların kesilmemesi için devasa boşluk */
-    min-height: 120dvh !important; /* Zorla taşma yaratıyoruz ki kaydırılabilsin */
+  html, body {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  .game-container-root {
+    /* Yan çevirince içerik 100svh'ye sığamaz, bu yüzden yüksekliği serbest bırak */
+    height: auto !important;
+    min-height: 600px !important; /* İçeriğin ezilmemesi için min sınır */
+    padding-top: 10px;
+    padding-bottom: 80px; /* Butonun link barı altında kalmaması için ekstra boşluk */
+  }
+
+  /* Yan modda bazı elemanları küçülterek yer açalım */
+  input {
+    font-size: 5rem !important;
   }
 }
 

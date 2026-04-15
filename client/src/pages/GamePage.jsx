@@ -250,11 +250,11 @@ const loadProfileData = () => {
   }, [streakLevel]);
 
   return (
-  <div className="h-[100svh] w-full pb-2 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center text-white relative">
+  <div className="h-[100svh] w-full pb-2 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center overflow-hidden text-white relative">
     <style>{`
       input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
       input[type=number] { -moz-appearance: textfield; }
-      body { overflow: hidden; position: fixed; width: 100%; }
+      
     `}</style>
 
     {/* 🔥 YENİ: KOMPAKT PROFİL HEADER (ARTIK ÜSTE BİNMEZ) */}
