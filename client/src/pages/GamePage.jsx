@@ -349,32 +349,13 @@ const loadProfileData = () => {
 />
                </form>
 
-{/* ANA SARMALAYICI (Bunu mavi kutunun bittiği yerin hemen altına koy) */}
-<div className="w-full flex justify-center mt-8 px-4 md:px-0">
-  
-  <div className="
-    /* MOBİL: Mavi kutunun tam altında, ekrana ortalı, %100 genişlik */
-    w-full max-w-[450px]
-    /* MASAÜSTÜ: Ekranın sağında sabit duran kutu */
-    md:fixed md:w-auto md:max-w-none md:right-10 md:top-1/2 md:-translate-y-1/2 md:mt-0
-    z-[9999]">
-    
-    <button
-      onClick={handleGuess}
-      className="
-        bg-[#ff7b00] hover:bg-[#ff8c1a] text-white font-[1000] 
-        shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-1 
-        transition-all flex items-center justify-center gap-4 uppercase italic shadow-2xl
-        /* Mobil: Enine dümdüz ve uzun şerit */
-        w-full py-6 rounded-2xl text-2xl
-        /* Masaüstü: Karemsi büyük buton */
-        md:w-48 md:h-48 md:flex-col md:rounded-[3rem] md:text-2xl
-      "
-    >
-      <span className="text-3xl md:text-5xl">🚀</span>
-      <span className="tracking-tighter whitespace-nowrap">TAHMİN ET</span>
-    </button>
-  </div>
+<div className="fixed bottom-315 left-0 -translate-x-1/2 w-[90%]  md:right-100 md:top-180 md:-translate-y-1/2 md:translate-x-0 md:w-auto z-[9999]">
+  <button
+    onClick={handleGuess}
+    className="w-full md:w-44 md:h-44 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl md:text-2xl rounded-2xl md:rounded-[2.5rem] shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-2 transition-all flex flex-row md:flex-col items-center justify-center gap-3 py-5 md:py-0 uppercase italic shadow-2xl"
+  >
+    TAHMİN ET 🚀
+  </button>
 </div>
 
                {/* BURAYA YAPIŞTIR: Formun bittiği yer */}
