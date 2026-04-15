@@ -312,10 +312,10 @@ const loadProfileData = () => {
             </div>
 
             {/* OYUN ALANI */}
-<div className="bg-[#162a44] p-3 md:p-5 rounded-[2.5rem] md:rounded-[4.5rem] shadow-2xl border-4 border-white/5 relative overflow-hidden text-center w-full max-w-2xl">
+<div className="bg-[#162a44] h-20 md:h-110 p-0 md:p-0 rounded-[2.5rem] md:rounded-[4 rem] shadow-2xl border-4 border-white/5 relative overflow-hidden text-center w-full max-w-2xl">
   
   {/* Üstteki basamaklar ve mesaj alanı boşlukları azaltıldı */}
-  <div className="flex justify-center gap-2 mb-1 h-6">
+  <div className="flex justify-center gap-2 mb-1 h-6 p-6 ">
                 {Object.keys(revealedDigits).length > 0 && 
                   targetNumber.toString().split('').map((_, i) => (
                     <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} key={i} 
@@ -347,11 +347,16 @@ const loadProfileData = () => {
   className={`w-full bg-transparent text-[5rem] sm:text-[8rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
   placeholder="?" 
 />
-                 <button type="submit" className="hidden">OK</button>
+                 <button
+    onClick={handleGuess}
+    className="w-full sm:w-auto h-10 px-5 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl rounded-2xl shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-2 transition-all flex items-center justify-center gap-2"
+  >
+    TAHMİN ET 🚀
+  </button>
                </form>
 
                {/* BURAYA YAPIŞTIR: Formun bittiği yer */}
-<div className="flex flex-wrap justify-center gap-2 mt-2 overflow-x-auto pb-2 max-h-24">
+<div className="flex flex-wrap justify-center gap-2 mt-1/2 overflow-x-auto pb-3 max-h-24">
   {attempts.map((prevGuess, index) => (
     <motion.div
       initial={{ scale: 0, opacity: 0 }}

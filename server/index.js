@@ -13,8 +13,8 @@ app.use(cors());
 
 // KRİTİK AYAR: Profil resimleri (Base64) için limit artırıldı 🚀
 // Not: 50mb çok geniştir, ileride 5mb-10mb civarına çekmen daha güvenli olur kanka.
-app.use(express.json({ limit: '50mb' })); 
-app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }));
 
 // 2. RATE LIMITER (Daha akıllıca yapılandırdık)
 const limiter = rateLimit({

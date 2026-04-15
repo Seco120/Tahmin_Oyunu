@@ -1,22 +1,48 @@
-
-/* Montserrat fontunu yine en üstte tutabilirsin */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+/* Montserrat fontunu en üstte tutuyoruz */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&display=swap');
 
 @import "tailwindcss";
 
-/* Eğer Montserrat kullanacaksan v4'te fontu böyle tanımlarsın: */
 @theme {
+  /* Fontu tanımladık */
   --font-montserrat: "Montserrat", sans-serif;
+  
+  /* Projenin genelinde Montserrat'ın varsayılan olması için: */
+  --font-sans: var(--font-montserrat);
 }
 
+/* Global Reset ve Mobil Optimizasyonu */
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    /* 100dvh: Mobil tarayıcı barları değişse bile arka planın zıplamasını önler */
+    min-height: 100dvh;
+    overflow-x: hidden;
+    /* Fontun her yere işlemesini garantiye alalım */
+    font-family: var(--font-montserrat);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* Mobilde metinlerin otomatik büyümesini engeller */
+    -webkit-text-size-adjust: 100%;
+  }
 
+  body {
+    /* Sayfa içi kaydırmayı yumuşatır */
+    scroll-behavior: smooth;
+    /* Butonlardaki o mavi tıklama gölgesini kaldırır */
+    -webkit-tap-highlight-color: transparent;
+  }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* Form elemanları fontu miras alsın */
+  input, button, textarea, select {
+    font-family: inherit;
+  }
+}
+
+/* Mobil için özel dokunuş */
+@utility touch-none {
   touch-action: manipulation;
 }

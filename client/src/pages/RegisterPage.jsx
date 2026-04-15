@@ -84,7 +84,7 @@ const RegisterPage = () => {
   return (
     /* h-[100dvh] ve overflow-hidden ile aşağı kaymayı (scroll) tamamen iptal ettik */
     /* pt-12 (mobil) ve pt-20 (masaüstü) ile Header'a iyice yaklaştırdık */
-    <div className="h-[100dvh] w-full font-['Montserrat'] flex flex-col items-center justify-start pt-12 md:pt-20 px-4 bg-transparent overflow-hidden">
+    <div className="h-[100dvh] w-full font-['Montserrat'] flex flex-col items-center justify-start pt-12 md:pt-12 px-4 bg-transparent overflow-hidden">
       
       {/* BAŞLIK - Margin azaltılarak yukarı çekildi */}
       <div className="relative z-50 text-center mb-6 md:mb-8">
