@@ -16,6 +16,7 @@ export default function GamePage() {
   const [score, setScore] = useState(0);
   const [range, setRange] = useState({ min: 1, max: 100 });
   const isGuest = localStorage.getItem('isGuest') === 'true';
+  const [isNewRecord, setIsNewRecord] = useState(false);
 
   // --- JOKERLER & İPUÇLARI ---
   const [powers, setPowers] = useState({ lens: 3, scanner: 3 }); 
@@ -222,13 +223,16 @@ const loadProfileData = () => {
     } else {
       if (currentLives <= 1) {
         setCurrentLives(0);
-        setGameState('result');
+        
         if (gameMode === 'streak') {
-          // Rekor kontrolü: Eğer şu anki skor record'dan büyükse gönder
+          // Rekor kontrolü: Eğer şu anki skor eski rekordan büyükse
           if (score > profileData.score) {
+            setIsNewRecord(true); // Flag'i burada yakıyoruz, result ekranı buna bakacak
             submitScoreToBackend(score);
           }
         }
+        setGameState('result');
+
       } else {
         setCurrentLives(prev => prev - 1);
         setMessage({
@@ -260,7 +264,7 @@ const loadProfileData = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="w-full max-w-md mb-2 bg-[#1a2c3d]/60 backdrop-blur-md p-2 rounded-2xl border border-white/10 flex items-center justify-between shadow-lg"
+          className="w-full max-w-md mb-5 bg-[#1a2c3d]/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 flex items-center justify-between shadow-lg"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full border-2 border-[#ff7b00] overflow-hidden">
@@ -312,87 +316,97 @@ const loadProfileData = () => {
             </div>
 
             {/* OYUN ALANI */}
-<div className="bg-[#162a44] h-20 md:h-110 p-0 md:p-0 rounded-[2.5rem] md:rounded-[4 rem] shadow-2xl border-4 border-white/5 relative overflow-hidden text-center w-full max-w-2xl">
+{/* OYUN ALANI */}
+<div className="bg-[#162a44] min-h-[500px] md:h-auto p-4 md:p-8 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl border-4 border-white/5 relative overflow-hidden flex flex-col items-center justify-between w-full max-w-2xl mx-auto">
   
-  {/* Üstteki basamaklar ve mesaj alanı boşlukları azaltıldı */}
-  <div className="flex justify-center gap-2 mb-1 h-6 p-6 ">
-                {Object.keys(revealedDigits).length > 0 && 
-                  targetNumber.toString().split('').map((_, i) => (
-                    <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} key={i} 
-                      className={`w-8 h-10 border-2 rounded-lg flex items-center justify-center font-black 
-                        ${revealedDigits[i] ? 'border-[#ff7b00] text-[#ff7b00] bg-[#ff7b00]/10' : 'border-white/10 text-white/10'}`}>
-                      {revealedDigits[i] || '?'}
-                    </motion.div>
-                  ))
-                }
-              </div>
+  {/* Üst Kısım: Basamaklar ve İpucu */}
+  <div className="w-full space-y-4">
+    <div className="flex justify-center gap-2 h-12 items-center">
+      {Object.keys(revealedDigits).length > 0 && 
+        targetNumber.toString().split('').map((_, i) => (
+          <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} key={i} 
+            className={`w-10 h-12 border-2 rounded-xl flex items-center justify-center font-black text-lg
+              ${revealedDigits[i] ? 'border-[#ff7b00] text-[#ff7b00] bg-[#ff7b00]/10' : 'border-white/10 text-white/20'}`}>
+            {revealedDigits[i] || '?'}
+          </motion.div>
+        ))
+      }
+    </div>
 
-               {activeHint && (
-                 <motion.div initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="absolute left-8 top-8 bg-[#ff7b00] text-white px-4 py-1 rounded-lg font-black italic text-[10px]">
-                    İPUCU: SAYI {activeHint}!
-                 </motion.div>
-               )}
+    {activeHint && (
+      <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} 
+        className="mx-auto w-fit bg-[#ff7b00] text-white px-4 py-1 rounded-full font-black italic text-[10px] tracking-widest">
+        İPUCU: SAYI {activeHint}!
+      </motion.div>
+    )}
 
-               <motion.div key={message.text} className={`text-xs font-[1000] uppercase tracking-[0.3em] mb-8 ${message.type === 'up' ? 'text-blue-400' : message.type === 'down' ? 'text-red-400' : 'text-green-400'}`}>
-                {message.text}
-               </motion.div>
-
-               <form onSubmit={handleGuess}>
-                <input 
-  autoFocus 
-  type="number" 
-  inputMode="numeric" // Sayı klavyesini zorlar
-  value={guess} 
-  onChange={(e) => setGuess(e.target.value)} 
-  className={`w-full bg-transparent text-[5rem] sm:text-[8rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
-  placeholder="?" 
-/>
-               </form>
-
-<div className="fixed bottom-315 left-0 -translate-x-1/2 w-[90%]  md:right-100 md:top-180 md:-translate-y-1/2 md:translate-x-0 md:w-auto z-[9999]">
-  <button
-    onClick={handleGuess}
-    className="w-full md:w-44 md:h-44 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl md:text-2xl rounded-2xl md:rounded-[2.5rem] shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-2 transition-all flex flex-row md:flex-col items-center justify-center gap-3 py-5 md:py-0 uppercase italic shadow-2xl"
-  >
-    TAHMİN ET 🚀
-  </button>
-</div>
-
-               {/* BURAYA YAPIŞTIR: Formun bittiği yer */}
-<div className="flex flex-wrap justify-center gap-2 mt-1/2 overflow-x-auto pb-3 max-h-24">
-  {attempts.map((prevGuess, index) => (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      key={index}
-      className={`px-3 py-1 rounded-full text-xs font-black border ${
-        prevGuess < targetNumber 
-          ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' 
-          : 'border-red-500/50 text-red-400 bg-red-400/10'
-      }`}
-    >
-      {prevGuess} {prevGuess < targetNumber ? '↑' : '↓'}
+    <motion.div key={message.text} 
+      className={`text-xs font-[1000] uppercase tracking-[0.3em] text-center h-4 ${message.type === 'up' ? 'text-blue-400' : message.type === 'down' ? 'text-red-400' : 'text-green-400'}`}>
+      {message.text}
     </motion.div>
-  ))}
-</div>
+  </div>
 
-               {gameMode === 'streak' && (
-<div className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-5">
-                   <div className="relative">
-                     <motion.button whileTap={{ scale: 0.9 }} onClick={useLens} disabled={powers.lens === 0 || activeHint} className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center border-2 ${powers.lens > 0 ? 'bg-[#1a2c3d] border-[#ff7b00]' : 'opacity-10'}`}>
-                       <span className="text-xl">🔍</span>
-                     </motion.button>
-                     <span className="absolute -top-2 -right-2 bg-[#ff7b00] text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center">{powers.lens}</span>
-                   </div>
-                   <div className="relative">
-                     <motion.button whileTap={{ scale: 0.9 }} onClick={useScanner} disabled={powers.scanner === 0} className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center border-2 ${powers.scanner > 0 ? 'bg-[#1a2c3d] border-purple-500' : 'opacity-10'}`}>
-                       <span className="text-xl">📡</span>
-                     </motion.button>
-                     <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center">{powers.scanner}</span>
-                   </div>
-                </div>
-               )}
-            </div>
+  {/* Orta Kısım: Dev Input */}
+  <div className="flex-1 flex items-center justify-center w-full my:12 md:my-0">
+    <form onSubmit={handleGuess} className="w-full">
+      <input 
+        autoFocus 
+        type="number" 
+        inputMode="numeric"
+        value={guess} 
+        onChange={(e) => setGuess(e.target.value)} 
+        className={`w-full bg-transparent text-[6rem] sm:text-[9rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all leading-none ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
+        placeholder="?" 
+      />
+    </form>
+  </div>
+
+  {/* Alt Kısım: Geçmiş Tahminler ve Buton */}
+  <div className="w-full space-y-6 z-10">
+    <div className="flex flex-wrap justify-center gap-2 overflow-x-auto pb-2 max-h-20 mask-fade">
+      {attempts.map((prevGuess, index) => (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          key={index}
+          className={`px-3 py-1 rounded-full text-[10px] font-black border shrink-0 ${
+            prevGuess < targetNumber 
+              ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' 
+              : 'border-red-500/50 text-red-400 bg-red-400/10'
+          }`}
+        >
+          {prevGuess} {prevGuess < targetNumber ? '↑' : '↓'}
+        </motion.div>
+      ))}
+    </div>
+
+    {/* Tahmin Butonu: Mobilde ele tam oturur, Masaüstünde şıktır */}
+    <button
+      onClick={handleGuess}
+      className="w-full py-5 md:py-6 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl md:text-2xl rounded-2xl md:rounded-3xl shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-1 transition-all uppercase italic"
+    >
+      TAHMİN ET 🚀
+    </button>
+  </div>
+
+  {/* Güçler (Sağ Panel) */}
+  {gameMode === 'streak' && (
+    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-4">
+      <div className="relative group">
+        <motion.button whileTap={{ scale: 0.9 }} onClick={useLens} disabled={powers.lens === 0 || activeHint} className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${powers.lens > 0 ? 'bg-[#1a2c3d] border-[#ff7b00] shadow-lg shadow-[#ff7b00]/20' : 'opacity-20 grayscale'}`}>
+          <span className="text-2xl">🔍</span>
+        </motion.button>
+        <span className="absolute -top-2 -right-2 bg-[#ff7b00] text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-[#162a44]">{powers.lens}</span>
+      </div>
+      <div className="relative group">
+        <motion.button whileTap={{ scale: 0.9 }} onClick={useScanner} disabled={powers.scanner === 0} className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all ${powers.scanner > 0 ? 'bg-[#1a2c3d] border-purple-500 shadow-lg shadow-purple-500/20' : 'opacity-20 grayscale'}`}>
+          <span className="text-2xl">📡</span>
+        </motion.button>
+        <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-[#162a44]">{powers.scanner}</span>
+      </div>
+    </div>
+  )}
+</div>
           </motion.div>
         )}
 
@@ -458,37 +472,65 @@ const loadProfileData = () => {
           </motion.div>
         )}
 
-        {gameState === 'result' && (
-          <motion.div key="result" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center bg-[#1a2c3d] p-16 rounded-[5rem] border-4 border-[#ff7b00] shadow-3xl max-w-lg w-full">
-            {gameMode === 'classic' ? (
-              <>
-                <h2 className={`text-4xl font-[1000] italic mb-4 uppercase tracking-tighter ${attempts.includes(targetNumber) ? 'text-green-400' : 'text-red-500'}`}>
-                  {attempts.includes(targetNumber) ? 'BİLDİN TEBRİKLER! 🏆' : 'KAYBETTİN! 💀'}
-                </h2>
-                <div className="mb-8">
-                  <span className="text-[10px] font-black text-white/40 block tracking-[0.5em] uppercase mb-2">DOĞRU CEVAP</span>
-                  <span className="text-8xl font-[1000] text-white italic drop-shadow-2xl">{targetNumber}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <h2 className="text-4xl font-black italic text-red-500 mb-2 uppercase tracking-tighter">OYUN BİTTİ</h2>
-                <div className="mb-8">
-                  <span className="text-[10px] font-black text-white/40 block tracking-[0.5em] uppercase mb-4">FİNAL SKORU</span>
-                  <span className="text-[9rem] font-[1000] text-[#ff7b00] italic leading-none drop-shadow-2xl">{score}</span>
-                </div>
-                <div className={`mb-10 bg-white/5 p-6 rounded-3xl border border-white/10 ${getRankInfo(score).shadow} transition-all duration-500`}>
-                  <span className="text-[10px] font-black text-white/40 block tracking-[0.2em] uppercase mb-2 text-center">ERİŞİLEN RÜTBE</span>
-                  <p className={`text-4xl font-[1000] italic uppercase tracking-widest ${getRankInfo(score).color}`}>
-                    {getRankInfo(score).title}
-                  </p>
-                </div>
-              </>
-            )}
-            <button onClick={() => setGameState('lobby')} className="bg-white text-[#1a2c3d] w-full py-6 rounded-[2rem] font-[1000] text-2xl uppercase italic shadow-2xl hover:bg-[#ff7b00] hover:text-white transition-all active:scale-95">LOBİYE DÖN 🔄</button>
+      {gameState === 'result' && (
+  <motion.div 
+    key="result" 
+    initial={{ scale: 0.9, opacity: 0 }} 
+    animate={{ scale: 1, opacity: 1 }} 
+    className="text-center bg-[#1a2c3d] p-10 md:p-16 rounded-[3rem] md:rounded-[5rem] border-4 border-[#ff7b00] shadow-3xl max-w-lg w-full mx-4"
+  >
+    {gameMode === 'classic' ? (
+      <>
+        <h2 className={`text-3xl md:text-4xl font-[1000] italic mb-4 uppercase tracking-tighter ${attempts.includes(targetNumber) ? 'text-green-400' : 'text-red-500'}`}>
+          {attempts.includes(targetNumber) ? 'BİLDİN TEBRİKLER! 🏆' : 'KAYBETTİN! 💀'}
+        </h2>
+        <div className="mb-8">
+          <span className="text-[10px] font-black text-white/40 block tracking-[0.5em] uppercase mb-2">DOĞRU CEVAP</span>
+          <span className="text-7xl md:text-8xl font-[1000] text-white italic drop-shadow-2xl">{targetNumber}</span>
+        </div>
+      </>
+    ) : (
+      <>
+        <h2 className="text-3xl md:text-4xl font-black italic text-red-500 mb-2 uppercase tracking-tighter">OYUN BİTTİ</h2>
+        
+        <div className="mb-8">
+          <span className="text-[10px] font-black text-white/40 block tracking-[0.5em] uppercase mb-2">PUANIN</span>
+          <span className="text-8xl md:text-[9rem] font-[1000] text-[#ff7b00] italic leading-none drop-shadow-2xl">{score}</span>
+        </div>
+
+        {/* FLAG KONTROLÜ: Sayfa yenilenene veya lobiye dönene kadar sabit kalır */}
+        {isNewRecord ? (
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }} 
+            animate={{ y: 0, opacity: 1 }}
+            className={`mb-10 bg-white/5 p-6 rounded-3xl border-2 border-[#ff7b00] ${getRankInfo(score).shadow} shadow-2xl`}
+          >
+            <span className="text-[10px] font-black text-[#ff7b00] block tracking-[0.3em] uppercase mb-2">✨ YENİ REKOR! ✨</span>
+            <p className={`text-3xl md:text-4xl font-[1000] italic uppercase tracking-widest ${getRankInfo(score).color}`}>
+              {getRankInfo(score).title}
+            </p>
           </motion.div>
+        ) : (
+          <div className="mb-10 text-white/20 font-black text-[10px] uppercase tracking-widest">
+            KİŞİSEL REKORUN: {profileData.score}
+          </div>
         )}
+      </>
+    )}
+
+    <button 
+      onClick={() => {
+        setIsNewRecord(false); // Flag'i temizle
+        setGameState('lobby');
+      }} 
+      className="bg-white text-[#1a2c3d] w-full py-5 rounded-[2rem] font-[1000] text-xl md:text-2xl uppercase italic shadow-2xl hover:bg-[#ff7b00] hover:text-white transition-all active:scale-95"
+    >
+      LOBİYE DÖN 🔄
+    </button>
+  </motion.div>
+)}
       </AnimatePresence>
     </div>
   );
-}
+};
+
