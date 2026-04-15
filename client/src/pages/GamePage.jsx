@@ -371,7 +371,7 @@ const loadProfileData = () => {
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           key={index}
-          className={`px-3 py-0 rounded-full text-[14px] font-black border shrink-0 ${
+          className={`px-3 py-0 rounded-full text-[15px] font-black border shrink-0 ${
             prevGuess < targetNumber 
               ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' 
               : 'border-red-500/50 text-red-400 bg-red-400/10'
