@@ -21,8 +21,6 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  
-
   body {
     margin: 0;
     padding: 0;
@@ -49,21 +47,20 @@
   input, button, textarea, select {
     font-family: inherit;
   }
-
-  #root {
-  width: 100%;
-  overflow-x: hidden;
 }
-
 
 /* Mobil için özel dokunuş */
 @utility touch-none {
   touch-action: manipulation;
 }
 
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 
 /* Header'ın her şeyin üstünde olduğundan emin olalım */
 header {
   isolation: isolate;
-}
 }
