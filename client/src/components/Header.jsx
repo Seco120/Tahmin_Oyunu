@@ -180,7 +180,7 @@ const syncHeader = useCallback(() => {
           to="/" 
           className="flex items-center gap-2 md:gap-4 no-underline shrink-0 group z-[10001]"
         >
-          <div className="h-[55px] md:h-[85px] w-auto transition-transform duration-300 group-hover:scale-105">
+          <div className="hidden h-[55px] md:h-[85px] w-auto transition-transform duration-300 group-hover:scale-105">
             <img src={logoImg} alt="Logo" className="h-full w-full object-contain" />
           </div>
           <div className="flex flex-col uppercase text-[#1a2c3d] ml-1">

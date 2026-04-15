@@ -13,30 +13,35 @@
 
 /* Global Reset ve Mobil Optimizasyonu */
 @layer base {
-  html, body {
+  html {
+    /* Sağa taşmaları kökten kesiyoruz */
+    overflow-x: hidden;
+    width: 100%;
+    /* Mobilde metinlerin otomatik büyümesini engeller */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  
+
+  body {
     margin: 0;
     padding: 0;
     width: 100%;
     /* 100dvh: Mobil tarayıcı barları değişse bile arka planın zıplamasını önler */
     min-height: 100dvh;
     overflow-x: hidden;
-    /* Fontun her yere işlemesini garantiye alalım */
+    position: relative;
+    
     font-family: var(--font-montserrat);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     
-    /* Mobilde metinlerin otomatik büyümesini engeller */
-    -webkit-text-size-adjust: 100%;
-    background-color: white; /* Veya arkaplanın neyse o kalsın */
-  position: relative;
-  /* iPhone çentik ve alt bar uyumu */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  }
-
-  body {
-    /* Sayfa içi kaydırmayı yumuşatır */
+    /* Arka planın zıplamasını ve beyaz boşlukları engeller */
+    background-color: #f4f7fa; 
+    
+    /* Scroll'u yumuşatır */
     scroll-behavior: smooth;
-    /* Butonlardaki o mavi tıklama gölgesini kaldırır */
+    /* Mavi tıklama gölgesini kaldırır */
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -44,7 +49,12 @@
   input, button, textarea, select {
     font-family: inherit;
   }
+
+  #root {
+  width: 100%;
+  overflow-x: hidden;
 }
+
 
 /* Mobil için özel dokunuş */
 @utility touch-none {
@@ -55,4 +65,5 @@
 /* Header'ın her şeyin üstünde olduğundan emin olalım */
 header {
   isolation: isolate;
+}
 }
