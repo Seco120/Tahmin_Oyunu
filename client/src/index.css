@@ -27,6 +27,10 @@
     
     /* Mobilde metinlerin otomatik büyümesini engeller */
     -webkit-text-size-adjust: 100%;
+    background-color: white; /* Veya arkaplanın neyse o kalsın */
+  position: relative;
+  /* iPhone çentik ve alt bar uyumu */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   body {
@@ -45,4 +49,10 @@
 /* Mobil için özel dokunuş */
 @utility touch-none {
   touch-action: manipulation;
+}
+
+
+/* Header'ın her şeyin üstünde olduğundan emin olalım */
+header {
+  isolation: isolate;
 }

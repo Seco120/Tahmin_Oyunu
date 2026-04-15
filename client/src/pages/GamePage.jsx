@@ -347,13 +347,35 @@ const loadProfileData = () => {
   className={`w-full bg-transparent text-[5rem] sm:text-[8rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
   placeholder="?" 
 />
-                 <button
-    onClick={handleGuess}
-    className="w-full sm:w-auto h-10 px-5 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl rounded-2xl shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-2 transition-all flex items-center justify-center gap-2"
-  >
-    TAHMİN ET 🚀
-  </button>
                </form>
+
+{/* ANA SARMALAYICI (Bunu mavi kutunun bittiği yerin hemen altına koy) */}
+<div className="w-full flex justify-center mt-8 px-4 md:px-0">
+  
+  <div className="
+    /* MOBİL: Mavi kutunun tam altında, ekrana ortalı, %100 genişlik */
+    w-full max-w-[450px]
+    /* MASAÜSTÜ: Ekranın sağında sabit duran kutu */
+    md:fixed md:w-auto md:max-w-none md:right-10 md:top-1/2 md:-translate-y-1/2 md:mt-0
+    z-[9999]">
+    
+    <button
+      onClick={handleGuess}
+      className="
+        bg-[#ff7b00] hover:bg-[#ff8c1a] text-white font-[1000] 
+        shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-1 
+        transition-all flex items-center justify-center gap-4 uppercase italic shadow-2xl
+        /* Mobil: Enine dümdüz ve uzun şerit */
+        w-full py-6 rounded-2xl text-2xl
+        /* Masaüstü: Karemsi büyük buton */
+        md:w-48 md:h-48 md:flex-col md:rounded-[3rem] md:text-2xl
+      "
+    >
+      <span className="text-3xl md:text-5xl">🚀</span>
+      <span className="tracking-tighter whitespace-nowrap">TAHMİN ET</span>
+    </button>
+  </div>
+</div>
 
                {/* BURAYA YAPIŞTIR: Formun bittiği yer */}
 <div className="flex flex-wrap justify-center gap-2 mt-1/2 overflow-x-auto pb-3 max-h-24">
@@ -392,6 +414,8 @@ const loadProfileData = () => {
             </div>
           </motion.div>
         )}
+
+        
 
         {/* LOBBY, SETUP VE RESULT KISIMLARINDAKİ MANTIĞIN AYNI KALMASI İÇİN BURAYI KISALTTIN */}
         {gameState === 'lobby' && (
