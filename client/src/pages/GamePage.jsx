@@ -250,7 +250,7 @@ const loadProfileData = () => {
   }, [streakLevel]);
 
   return (
-  <div className="h-[100svh] w-full pt-2 pb-2 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center overflow-hidden text-white relative">
+  <div className="h-[100svh] w-full pb-2 px-4 font-['Montserrat'] bg-transparent flex flex-col items-center overflow-hidden text-white relative">
     <style>{`
       input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
       input[type=number] { -moz-appearance: textfield; }
@@ -264,7 +264,7 @@ const loadProfileData = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="w-full max-w-md mb-5 bg-[#1a2c3d]/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 flex items-center justify-between shadow-lg"
+          className="w-full max-w-md mb-2 py-3 bg-[#1a2c3d]/90 backdrop-blur-md p-3 rounded-2xl border border-white/20 flex items-center justify-between shadow-lg"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full border-2 border-[#ff7b00] overflow-hidden">
@@ -353,8 +353,10 @@ const loadProfileData = () => {
         autoFocus 
         type="number" 
         inputMode="numeric"
+        pattern="[0-9]*"
         value={guess} 
         onChange={(e) => setGuess(e.target.value)} 
+        onFocus={(e) => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' })}
         className={`w-full bg-transparent text-[6rem] sm:text-[9rem] md:text-[11rem] font-[1000] outline-none text-center italic tracking-tighter transition-all leading-none ${(parseInt(guess) < range.min || parseInt(guess) > range.max) ? 'text-red-500' : 'text-white'}`} 
         placeholder="?" 
       />
@@ -369,7 +371,7 @@ const loadProfileData = () => {
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           key={index}
-          className={`px-3 py-1 rounded-full text-[10px] font-black border shrink-0 ${
+          className={`px-3 py-0 rounded-full text-[14px] font-black border shrink-0 ${
             prevGuess < targetNumber 
               ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' 
               : 'border-red-500/50 text-red-400 bg-red-400/10'
@@ -379,14 +381,19 @@ const loadProfileData = () => {
         </motion.div>
       ))}
     </div>
+{/* 🚀 TAHMİN ET BUTONU - Sabit CSS ile Link Barını Bypass Etme */}
 
-    {/* Tahmin Butonu: Mobilde ele tam oturur, Masaüstünde şıktır */}
-    <button
-      onClick={handleGuess}
-      className="w-full py-5 md:py-6 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl md:text-2xl rounded-2xl md:rounded-3xl shadow-[0_8px_0_rgb(204,98,0)] active:shadow-none active:translate-y-1 transition-all uppercase italic"
-    >
-      TAHMİN ET 🚀
-    </button>
+  <button
+    type="button" // Form submit'i elle handleGuess ile yapıyorsun zaten, button yap ki Safari sapıtmasın
+    onPointerDown={(e) => {
+      // iOS'ta focus kaçmasını engellemek için dokunma başladığı an işlemi yap
+      e.preventDefault(); 
+      handleGuess(e);
+    }}
+    className="w-full h-16 md:h-24 bg-[#ff7b00] hover:bg-[#e66a00] text-white font-[1000] text-xl md:text-2xl rounded-2xl md:rounded-[2.5rem] shadow-[0_6px_0_rgb(204,98,0)] active:shadow-none active:translate-y-1 transition-all flex items-center justify-center gap-3 uppercase italic shadow-2xl touch-manipulation"
+  >
+    TAHMİN ET 🚀
+  </button>
   </div>
 
   {/* Güçler (Sağ Panel) */}
