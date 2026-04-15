@@ -68,6 +68,11 @@ Bu proje, veri güvenliğini ve adil oyun deneyimini ön planda tutan profesyone
 
 ---
 
+## 🔗 Canlı Demo
+https://tahmin-oyunu-blue.vercel.app/
+
+---
+
 ## 👨‍💻 Geliştirici
 
 **İrfan Sercan Ergüzel** - *Junior Software Developer*
