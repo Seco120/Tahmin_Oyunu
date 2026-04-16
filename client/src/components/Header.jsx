@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'; // <-- useCallback ekle
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'; // <-- useCallback ekle
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logoImg from '../assets/logo.png'; 
@@ -23,15 +23,14 @@ const [status, setStatus] = useState({ type: '', msg: '' });
   const isLoggedIn = !!localStorage.getItem('token'); 
 
   // --- OYUNDAKİ RANK SİSTEMİYLE AYNI MANTIK ---
-  const getRankInfo = (s) => {
-    if (s >= 5000) return { title: "USTA 👑", color: "text-[#00ffff]" };
-    if (s >= 3500) return { title: "ELMAS 💎", color: "text-[#b9f2ff]" };
-    if (s >= 2000) return { title: "PLATİN 💠", color: "text-[#e5e4e2]" };
-    if (s >= 800) return { title: "ALTIN 🏆", color: "text-[#ffd700]" };
-    if (s >= 400) return { title: "GÜMÜŞ 🥈", color: "text-[#c0c0c0]" };
-    return { title: "BRONZ 🥉", color: "text-[#cd7f32]" };
-  };
-
+  const getRankInfo = useCallback((s) => {
+  if (s >= 5000) return { title: "USTA 👑", color: "text-[#00ffff]" };
+  if (s >= 3500) return { title: "ELMAS 💎", color: "text-[#b9f2ff]" };
+  if (s >= 2000) return { title: "PLATİN 💠", color: "text-[#e5e4e2]" };
+  if (s >= 800) return { title: "ALTIN 🏆", color: "text-[#ffd700]" };
+  if (s >= 400) return { title: "GÜMÜŞ 🥈", color: "text-[#c0c0c0]" };
+  return { title: "BRONZ 🥉", color: "text-[#cd7f32]" };
+}, []);
  const handleFileChange = (e) => {
   const file = e.target.files[0];
   if (file) {
@@ -113,25 +112,23 @@ useEffect(() => {
 }, []);
 
 const syncHeader = useCallback(() => {
-    const savedUser = JSON.parse(localStorage.getItem('user'));
+  const savedUser = JSON.parse(localStorage.getItem('user'));
+  if (savedUser) {
+    const currentScore = savedUser.highScore !== undefined ? savedUser.highScore : (savedUser.score || 0);
+    const rankData = getRankInfo(currentScore); // Artık daha güvenli
     
-    if (savedUser) {
-      const currentScore = savedUser.highScore !== undefined ? savedUser.highScore : (savedUser.score || 0);
-      const rankData = getRankInfo(currentScore);
-      
-      setUserData({
-        ...savedUser,
-        score: currentScore,
-        rank: rankData.title,
-        rankColor: rankData.color,
-        avatar: savedUser.avatar // Backend'den gelen yeni resim buraya düşecek
-      });
+    setUserData({
+      ...savedUser,
+      score: currentScore,
+      rank: rankData.title,
+      rankColor: rankData.color,
+      avatar: savedUser.avatar 
+    });
 
-      // Düzenleme state'lerini de güncelle ki bir sonraki kayıtta eski veri kalmasın
-      setNewName(savedUser.username || "");
-      setNewAvatar(savedUser.avatar || ""); 
-    }
-  }, []); // Bağımlılık boş, çünkü getRankInfo sabit.
+    setNewName(savedUser.username || "");
+    setNewAvatar(savedUser.avatar || ""); 
+  }
+}, [getRankInfo]); // Bağımlılık eklendi
 
   // 2. Sayfa ilk açıldığında ve event'ler tetiklendiğinde çalışacak bekçi
   useEffect(() => {
@@ -158,12 +155,12 @@ const syncHeader = useCallback(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   // Navigasyon Elemanları
-  const navItems = [
-    { name: 'NASIL OYNANIR?', path: '/how-to-play', show: true },
-    { name: 'PUAN DURUMU', path: '/leaderboard', show: true },
-    { name: 'GİRİŞ YAP', path: '/login', show: !isLoggedIn },
-    { name: 'KAYIT OL', path: '/register', show: !isLoggedIn },
-  ];
+  const navItems = useMemo(() => [
+  { name: 'NASIL OYNANIR?', path: '/how-to-play', show: true },
+  { name: 'PUAN DURUMU', path: '/leaderboard', show: true },
+  { name: 'GİRİŞ YAP', path: '/login', show: !isLoggedIn },
+  { name: 'KAYIT OL', path: '/register', show: !isLoggedIn },
+], [isLoggedIn]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
