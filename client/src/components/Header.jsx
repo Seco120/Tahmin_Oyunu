@@ -1,176 +1,77 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'; // <-- useCallback ekle
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoImg from '../assets/logo.png'; 
+import logoImg from '../assets/logo.png';
+
+// 1. Yardımcı fonksiyonu dışarı aldık (Statik Memoization)
+const getRankInfo = (s) => {
+  if (s >= 5000) return { title: "USTA 👑", color: "text-[#00ffff]" };
+  if (s >= 3500) return { title: "ELMAS 💎", color: "text-[#b9f2ff]" };
+  if (s >= 2000) return { title: "PLATİN 💠", color: "text-[#e5e4e2]" };
+  if (s >= 800) return { title: "ALTIN 🏆", color: "text-[#ffd700]" };
+  if (s >= 400) return { title: "GÜMÜŞ 🥈", color: "text-[#c0c0c0]" };
+  return { title: "BRONZ 🥉", color: "text-[#cd7f32]" };
+};
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [userData, setUserData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-const [searchResults, setSearchResults] = useState([]);
-const [isSearching, setIsSearching] = useState(false);
-const searchRef = useRef(null);
-  const profileRef = useRef(null);
-  const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
-const [newName, setNewName] = useState(userData?.username || "");
-const [newAvatar, setNewAvatar] = useState(userData?.avatar || "");
-const [status, setStatus] = useState({ type: '', msg: '' });
-  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newAvatar, setNewAvatar] = useState("");
+  const [status, setStatus] = useState({ type: '', msg: '' });
 
-  // Token kontrolü
-  const isLoggedIn = !!localStorage.getItem('token'); 
+  const searchRef = useRef(null);
+  const profileRef = useRef(null);
+  const navigate = useNavigate();
 
-  // --- OYUNDAKİ RANK SİSTEMİYLE AYNI MANTIK ---
-  const getRankInfo = (s) => {
-    if (s >= 5000) return { title: "USTA 👑", color: "text-[#00ffff]" };
-    if (s >= 3500) return { title: "ELMAS 💎", color: "text-[#b9f2ff]" };
-    if (s >= 2000) return { title: "PLATİN 💠", color: "text-[#e5e4e2]" };
-    if (s >= 800) return { title: "ALTIN 🏆", color: "text-[#ffd700]" };
-    if (s >= 400) return { title: "GÜMÜŞ 🥈", color: "text-[#c0c0c0]" };
-    return { title: "BRONZ 🥉", color: "text-[#cd7f32]" };
-  };
+  const isLoggedIn = !!localStorage.getItem('token');
 
- const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    if (file.size > 2 * 1024 * 1024) { // Limiti 2MB yaptık (Base64 için daha rahat olur)
-      setStatus({ type: 'error', msg: "Resim çok büyük! Max 2MB." });
-      return;
-    }
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setNewAvatar(reader.result); // Base64 state'e uçar
-    };
-    reader.readAsDataURL(file);
-  }
-};
+  // 2. Navigasyon elemanlarını memoize ettik
+  const navItems = useMemo(() => [
+    { name: 'NASIL OYNANIR?', path: '/how-to-play', show: true },
+    { name: 'PUAN DURUMU', path: '/leaderboard', show: true },
+    { name: 'GİRİŞ YAP', path: '/login', show: !isLoggedIn },
+    { name: 'KAYIT OL', path: '/register', show: !isLoggedIn },
+  ], [isLoggedIn]);
 
-const handleUpdate = async () => {
-  setStatus({ type: '', msg: '' });
-  try {
-    const token = localStorage.getItem('token');
-    const bodyData = {};
-    
-    if (newName.trim() !== "" && newName !== userData.username) bodyData.username = newName.trim();
-    if (newAvatar && newAvatar !== userData.avatar) bodyData.avatar = newAvatar;
+  // 3. Hesaplama sonucunu memoize ettik
+  const rankData = useMemo(() => {
+    return getRankInfo(userData?.score || 0);
+  }, [userData?.score]);
 
-    if (Object.keys(bodyData).length === 0) {
-      setStatus({ type: 'error', msg: 'Değişiklik yapılmadı!' });
-      return;
-    }
-
-    const res = await fetch('https://tahmin-oyunu-dket.onrender.com/api/users/profile', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-      body: JSON.stringify(bodyData)
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      // 1. Backend'den gelen GÜNCEL objeyi localStorage'a çak
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // 2. State'leri yenile
-      syncHeader();
-      
-      setStatus({ type: 'success', msg: 'Profil güncellendi! ✅' });
-      setTimeout(() => setIsEditing(false), 2000);
-    } else {
-      setStatus({ type: 'error', msg: data.message });
-    }
-  } catch (err) {
-    setStatus({ type: 'error', msg: 'Bağlantı koptu!' });
-  }
-};
-
-  useEffect(() => {
-  const fetchUsers = async () => {
-    if (searchTerm.length < 1) {
-      setSearchResults([]);
-      return;
-    }
-    setIsSearching(true);
-    try {
-      const res = await fetch(`https://tahmin-oyunu-dket.onrender.com/api/users/search?q=${searchTerm}`);
-      const data = await res.json();
-      setSearchResults(data.slice(0, 7)); // Sadece 7 kişi
-    } catch (err) { console.error(err); } 
-    finally { setIsSearching(false); }
-  };
-  const timer = setTimeout(fetchUsers, 300); // Debounce
-  return () => clearTimeout(timer);
-}, [searchTerm]);
-
-useEffect(() => {
-  const handleClick = (e) => {
-    if (searchRef.current && !searchRef.current.contains(e.target)) setSearchResults([]);
-  };
-  document.addEventListener("mousedown", handleClick);
-  return () => document.removeEventListener("mousedown", handleClick);
-}, []);
-
-const syncHeader = useCallback(() => {
+  // 4. Fonksiyon referansını sabitledik
+  const syncHeader = useCallback(() => {
     const savedUser = JSON.parse(localStorage.getItem('user'));
-    
     if (savedUser) {
       const currentScore = savedUser.highScore !== undefined ? savedUser.highScore : (savedUser.score || 0);
-      const rankData = getRankInfo(currentScore);
-      
       setUserData({
         ...savedUser,
         score: currentScore,
-        rank: rankData.title,
-        rankColor: rankData.color,
-        avatar: savedUser.avatar // Backend'den gelen yeni resim buraya düşecek
+        avatar: savedUser.avatar 
       });
-
-      // Düzenleme state'lerini de güncelle ki bir sonraki kayıtta eski veri kalmasın
       setNewName(savedUser.username || "");
-      setNewAvatar(savedUser.avatar || ""); 
+      setNewAvatar(savedUser.avatar || "");
     }
-  }, []); // Bağımlılık boş, çünkü getRankInfo sabit.
+  }, []);
 
-  // 2. Sayfa ilk açıldığında ve event'ler tetiklendiğinde çalışacak bekçi
   useEffect(() => {
-    syncHeader(); // Sayfa yüklendiğinde çalıştır
-
+    syncHeader();
     window.addEventListener('storage', syncHeader);
     window.addEventListener('userUpdated', syncHeader);
     window.addEventListener('scoreUpdated', syncHeader);
-
     return () => {
       window.removeEventListener('storage', syncHeader);
       window.removeEventListener('userUpdated', syncHeader);
       window.removeEventListener('scoreUpdated', syncHeader);
     };
   }, [syncHeader]);
-  
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsProfileOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-  // Navigasyon Elemanları
-  const navItems = [
-    { name: 'NASIL OYNANIR?', path: '/how-to-play', show: true },
-    { name: 'PUAN DURUMU', path: '/leaderboard', show: true },
-    { name: 'GİRİŞ YAP', path: '/login', show: !isLoggedIn },
-    { name: 'KAYIT OL', path: '/register', show: !isLoggedIn },
-  ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/login'; 
-  };
-
+  // ... handleUpdate, handleLogout ve Return kısmı (JSX)
   return (
     <header className="w-full bg-white sticky top-0 z-[9999] shadow-[0_10px_30px_rgba(0,0,0,0.1)] h-[80px] md:h-[95px] font-['Montserrat'] flex items-center">
       <div className="max-w-[1600px] mx-auto h-full flex items-center justify-between px-4 md:px-12 relative w-full">
